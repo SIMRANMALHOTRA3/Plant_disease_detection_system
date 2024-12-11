@@ -1,10 +1,17 @@
+import os
+import streamlit as st
+
+# Try importing cv2 and handle ImportError
+try:
+    import cv2
+except ImportError as e:
+    st.error("The OpenCV library (cv2) is not installed. Please install it using 'pip install opencv-python'.")
+    st.stop()  # Stop execution if cv2 is not available
+
 import gdown
 from keras.models import load_model
-import streamlit as st
 import numpy as np
 from keras.preprocessing.image import img_to_array
-import cv2
-import os
 
 # Function to download the model from Google Drive
 def download_model():
