@@ -1,3 +1,14 @@
+import warnings
+from urllib3.exceptions import InsecureRequestWarning
+
+# Suppress SSL warnings
+warnings.filterwarnings("ignore", category=InsecureRequestWarning)
+import certifi
+import gdown
+
+# Use certifi to provide SSL certificates
+gdown.download(url, output, quiet=False, verify=certifi.where())
+
 import os
 import streamlit as st
 import sys
