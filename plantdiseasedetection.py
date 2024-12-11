@@ -1,5 +1,8 @@
 import os
 import streamlit as st
+import sys
+import streamlit as st
+st.write("Streamlit is using Python at:", sys.executable)
 
 # Try importing cv2 and handle ImportError
 try:
