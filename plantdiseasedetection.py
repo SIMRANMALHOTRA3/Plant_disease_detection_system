@@ -2,28 +2,31 @@ import gdown
 from keras.models import load_model
 import streamlit as st
 import numpy as np
-from keras.preprocessing import image
-from tensorflow.keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import img_to_array
 import cv2
 import os
 
 # Function to download the model from Google Drive
 def download_model():
-    url = 'https://drive.google.com/uc?export=download&id=1uvAp_I30bpXBt3nHQfQiow7MoGZXsJYx'  # Your Google Drive File ID
-    output = 'plant_disease_model.h5'  # Save as plant_disease_model.h5
-    gdown.download(url, output, quiet=False)
+    try:
+        url = 'https://drive.google.com/uc?export=download&id=1uvAp_I30bpXBt3nHQfQiow7MoGZXsJYx'
+        output = 'plant_disease_model.h5'
+        if not os.path.exists(output):  # Download only if the model file doesn't exist
+            gdown.download(url, output, quiet=False)
+    except Exception as e:
+        st.error(f"Error downloading model: {e}")
 
 # Function to load the trained model
 def load_trained_model():
     try:
-        download_model()  # Download model if not already present
-        model = load_model("plant_disease_model.h5")  # Load the model
+        download_model()
+        model = load_model("plant_disease_model.h5")
         return model
     except Exception as e:
-        print("Error loading model:", e)
+        st.error(f"Error loading model: {e}")
         return None
 
-# Function to preprocess the input image (resize and convert to array)
+# Function to preprocess the input image
 def preprocess_image(image_path):
     try:
         img = cv2.imread(image_path)
@@ -33,7 +36,7 @@ def preprocess_image(image_path):
         img = img / 255.0  # Normalize pixel values
         return img
     except Exception as e:
-        print("Error preprocessing image:", e)
+        st.error(f"Error preprocessing image: {e}")
         return None
 
 # Streamlit interface setup
@@ -56,19 +59,20 @@ if uploaded_file is not None:
         # Preprocess the uploaded image
         processed_img = preprocess_image(image_path)
 
-        # Make a prediction using the trained model
         if processed_img is not None:
-            prediction = model.predict(processed_img)
+            try:
+                # Make a prediction using the trained model
+                prediction = model.predict(processed_img)
+                classes = ['Corn-Common_rust', 'Potato-Early_blight', 'Tomato-Bacterial_spot']
+                predicted_class = classes[np.argmax(prediction)]
 
-            # Decode the prediction (for example, print predicted class)
-            classes = ['Corn-Common_rust', 'Potato-Early_blight', 'Tomato-Bacterial_spot']
-            predicted_class = classes[np.argmax(prediction)]
-
-            st.image(uploaded_file, caption="Uploaded Image.", use_column_width=True)
-            st.write(f"Prediction: {predicted_class}")
+                st.image(uploaded_file, caption="Uploaded Image.", use_column_width=True)
+                st.write(f"Prediction: {predicted_class}")
+            except Exception as e:
+                st.error(f"Error during prediction: {e}")
         else:
-            st.write("Error processing the image for prediction.")
+            st.error("Error processing the image for prediction.")
     else:
-        st.write("Error loading the model.")
+        st.error("Model could not be loaded.")
 else:
     st.write("Please upload an image to get started.")
