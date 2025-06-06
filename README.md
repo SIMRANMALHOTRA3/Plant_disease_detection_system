@@ -104,6 +104,7 @@ python prediction_script.py --image path_to_leaf.jpg
 | leaf_107.jpg   | Healthy               | 98.8%      |
 
 ---
+Email: simranmalhotra3399@gmail.com
 
 ## 🔮 Future Enhancements
 
