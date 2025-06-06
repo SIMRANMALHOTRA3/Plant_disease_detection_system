@@ -56,7 +56,7 @@ Make sure you have Python 3.7 or later installed.
 
 
 # Clone the repository
-git clone https://github.com/yourusername/plant-disease-detection.git
+git clone https://github.com/SIMRANMALHOTRA3/Plant_disease_detection_system
 cd plant-disease-detection
 
 # (Optional) Create virtual environment
